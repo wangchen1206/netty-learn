@@ -8,3 +8,5 @@ NioEventLoop 内部采用串行化设计，从消息的读取->解码->处理->�
  每个 NioEventLoop 的 Selector 上可以注册监听多个 NioChannel
  每个 NioChannel 只会绑定在唯一的 NioEventLoop 上
  每个 NioChannel 都绑定有一个自己的 ChannelPipeline
+
+Google Protocol Buffer 编译 命令  使用： protoc --java_out=src/main/java/ src/protobuf/Student.proto
