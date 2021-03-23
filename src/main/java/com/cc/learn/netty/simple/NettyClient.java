@@ -40,9 +40,8 @@ public class NettyClient {
             channelFuture.channel().closeFuture().sync();
         } finally {
             //异常，关闭事件循环组
+            System.out.println("优雅地关闭两个线程组");
             group.shutdownGracefully();
         }
-
-
     }
 }

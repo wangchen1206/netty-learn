@@ -60,10 +60,13 @@ public class NettyServer {
                 }
             });
 
-            //对关闭通道进行监听
+            //对关闭通道进行监听,然后在下面代码后的所有程序都不可执行，包括finally块中的代码。
+            //因此设计的时候，要注意关闭监听代码 和 finally中的代码，如果没有关闭坚挺的代码，
+            // 则不设置finally中的代码，或把这两个代码放在最后执行，不可分割这两块代码。
             channelFuture.channel().closeFuture().sync();
         }finally {
             //优雅地关闭两个线程组
+            System.out.println("优雅地关闭两个线程组");
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
