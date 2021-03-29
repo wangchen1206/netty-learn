@@ -29,37 +29,40 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         //比如我们在这里有个非常耗时长的任务，此时会阻塞。
         // 解决方案：异步执行-> 提交该耗时任务到该channel对应的NioEventLoop中的taskQueue中
         //异步执行
-        ctx.channel().eventLoop().execute(() -> {
-            try {
-                System.out.println("task1 线程： "+Thread.currentThread().getName());
-                Thread.sleep(5 * 1000);
-                ctx.writeAndFlush(Unpooled.copiedBuffer("1   模拟耗时任务。。。", CharsetUtil.UTF_8));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-
-        ctx.channel().eventLoop().execute(() -> {
-            try {
-                System.out.println("task2 线程： "+Thread.currentThread().getName());
-                Thread.sleep(5 * 1000);
-                ctx.writeAndFlush(Unpooled.copiedBuffer("2   模拟耗时任务。。。", CharsetUtil.UTF_8));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-
-        ctx.channel().eventLoop().schedule(() -> {
-            try {
-                System.out.println("task3 线程： "+Thread.currentThread().getName());
-                Thread.sleep(5 * 1000);
-                ctx.writeAndFlush(Unpooled.copiedBuffer("3   模拟耗时任务。。。", CharsetUtil.UTF_8));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        },5, TimeUnit.SECONDS);
-
-        System.out.println("go on ...");
+//        ctx.channel().eventLoop().execute(() -> {
+//            try {
+//                System.out.println("task1 线程： "+Thread.currentThread().getName());
+//                Thread.sleep(5 * 1000);
+//                ctx.writeAndFlush(Unpooled.copiedBuffer("1   模拟耗时任务。。。", CharsetUtil.UTF_8));
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//
+//        ctx.channel().eventLoop().execute(() -> {
+//            try {
+//                System.out.println("task2 线程： "+Thread.currentThread().getName());
+//                Thread.sleep(5 * 1000);
+//                ctx.writeAndFlush(Unpooled.copiedBuffer("2   模拟耗时任务。。。", CharsetUtil.UTF_8));
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//
+//        ctx.channel().eventLoop().schedule(() -> {
+//            try {
+//                System.out.println("task3 线程： "+Thread.currentThread().getName());
+//                Thread.sleep(5 * 1000);
+//                ctx.writeAndFlush(Unpooled.copiedBuffer("3   模拟耗时任务。。。", CharsetUtil.UTF_8));
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        },5, TimeUnit.SECONDS);
+        System.out.println("test...");
+        throw new RuntimeException("Test Exception");
+//        ctx.writeAndFlush(Unpooled.copiedBuffer("任务。。。", CharsetUtil.UTF_8));
+//
+//        System.out.println("go on ...");
 
 //        System.out.println("当前线程： "+Thread.currentThread().getName());
 //        Channel channel = ctx.channel();
@@ -83,6 +86,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     //处理异常
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        ctx.close();
+        //如果添加了专门的ExceptionHandler,则所有自定义的Handler的exceptionCaught方法必须执行下边的方法，最终交给ExceptionHandler执行
+        ctx.fireExceptionCaught(cause);
     }
 }

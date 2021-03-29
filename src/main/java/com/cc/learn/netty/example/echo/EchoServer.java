@@ -10,6 +10,8 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
 
 /**
  * Description
@@ -20,6 +22,7 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 public class EchoServer {
     static final boolean SSL = System.getProperty("ssl") != null;
     static final int PORT = Integer.parseInt(System.getProperty("port", "8007"));
+    private static EventExecutorGroup eventExecutors = new DefaultEventExecutorGroup(8);
 
     public static void main(String[] args) throws Exception {
         // Configure SSL.
@@ -48,7 +51,7 @@ public class EchoServer {
                                 p.addLast(sslCtx.newHandler(ch.alloc()));
                             }
                             //p.addLast(new LoggingHandler(LogLevel.INFO));
-                            p.addLast(new EchoServerHandler());
+                            p.addLast(eventExecutors,new EchoServerHandler());
                         }
                     });
 

@@ -40,7 +40,8 @@ public class NettyServer {
                             //这里可以将SocketChannel用一个集合管理起来，在主动向用户推送异步消息时，
                             // 可以将此类业务加入到各个channel对应的NioEventLoop的taskQueue和scheduleQueue中执行。
                             System.out.println("客户端socketChannel hashcode: "+ch.hashCode());
-                            ch.pipeline().addLast(new NettyServerHandler());//将处理器添加到管道中。
+                            ch.pipeline().addLast(new NettyServerHandler())
+                            .addLast(new ExceptionHandler());//将处理器添加到管道中。
                         }
                     });//给我们的workerGroup 的EventLoop设置处理器
 
